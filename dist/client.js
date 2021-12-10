@@ -15,7 +15,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var camunda_modeler_plugin_helpers_react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! camunda-modeler-plugin-helpers/react */ "./node_modules/camunda-modeler-plugin-helpers/react.js");
 /* harmony import */ var camunda_modeler_plugin_helpers_react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(camunda_modeler_plugin_helpers_react__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var camunda_modeler_plugin_helpers_components__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! camunda-modeler-plugin-helpers/components */ "./node_modules/camunda-modeler-plugin-helpers/components.js");
-Object(function webpackMissingModule() { var e = new Error("Cannot find module 'classnames'"); e.code = 'MODULE_NOT_FOUND'; throw e; }());
+/* harmony import */ var classnames__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! classnames */ "./node_modules/classnames/index.js");
+/* harmony import */ var classnames__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(classnames__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var _resources_timer_svg__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../resources/timer.svg */ "./resources/timer.svg");
 /* harmony import */ var _ConfigOverlay__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./ConfigOverlay */ "./client/ConfigOverlay.js");
 /**
@@ -163,13 +164,13 @@ class AutoSavePlugin extends camunda_modeler_plugin_helpers_react__WEBPACK_IMPOR
       group: "1_autosave"
     }, /*#__PURE__*/camunda_modeler_plugin_helpers_react__WEBPACK_IMPORTED_MODULE_0___default().createElement("button", {
       ref: this._buttonRef,
-      className: Object(function webpackMissingModule() { var e = new Error("Cannot find module 'classnames'"); e.code = 'MODULE_NOT_FOUND'; throw e; }())('btn', {
+      className: classnames__WEBPACK_IMPORTED_MODULE_2___default()('btn', {
         'btn--active': configOpen
       }),
       onClick: () => this.setState({
         configOpen: true
       })
-    }, /*#__PURE__*/camunda_modeler_plugin_helpers_react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_resources_timer_svg__WEBPACK_IMPORTED_MODULE_3__.default, null))), this.state.configOpen && /*#__PURE__*/camunda_modeler_plugin_helpers_react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_ConfigOverlay__WEBPACK_IMPORTED_MODULE_4__.default, {
+    }, /*#__PURE__*/camunda_modeler_plugin_helpers_react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_resources_timer_svg__WEBPACK_IMPORTED_MODULE_3__["default"], null))), this.state.configOpen && /*#__PURE__*/camunda_modeler_plugin_helpers_react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_ConfigOverlay__WEBPACK_IMPORTED_MODULE_4__["default"], {
       anchor: this._buttonRef.current,
       onClose: this.handleConfigClosed,
       initValues: initValues
@@ -266,17 +267,46 @@ function ConfigOverlay({
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "NotCompatible": () => (/* binding */ NotCompatible),
 /* harmony export */   "Fill": () => (/* binding */ Fill),
-/* harmony export */   "Modal": () => (/* binding */ Modal)
+/* harmony export */   "Modal": () => (/* binding */ Modal),
+/* harmony export */   "Overlay": () => (/* binding */ Overlay),
+/* harmony export */   "ToggleSwitch": () => (/* binding */ ToggleSwitch)
 /* harmony export */ });
 if (!window.components) {
-  throw new Error('Not compatible with Camunda Modeler < 3.4');
+  throw notCompatible('3.4');
 }
 
+function notCompatible(requiredVersion) {
+  return new Error('Not compatible with Camunda Modeler < v' + requiredVersion);
+}
+
+const NotCompatible = function(requiredVersion) {
+  return function NotCompatibleComponent() {
+    throw notCompatible(requiredVersion);
+  };
+};
+
 /**
- * Fill component.
+ * Fill component. Set `slot` to "toolbar" to include in the top toolbar.
+ * Use `group` and `priority=0` to place for correct ordering. The higher
+ * the priority, the earlier the Fill is displayed within the group.
  *
- * @type {import('react').ComponentType<{ group: string, name: string }>}
+ * @type {import('react').ComponentType<{ slot: string, group?: string, priority?: Number }>}
+ *
+ * @example
+ *
+ * import { Fill } from 'camunda-modeler-plugin-helpers/components';
+ *
+ * function CustomFill(props) {
+ *   return (
+ *     <Fill group="4_export" slot="toolbar" priority={100}>
+ *       <button type="button" onClick={ props.openExportTool }>
+ *         Open Export Tool
+ *       </button>
+ *     </Fill>
+ *   );
+ * }
  */
 const Fill = window.components.Fill;
 
@@ -284,8 +314,88 @@ const Fill = window.components.Fill;
  * Modal component.
  *
  * @type {import('react').ComponentType<{ onClose: Function }>}
+ *
+ * @example
+ *
+ * import { Modal } from 'camunda-modeler-plugin-helpers/components';
+ *
+ * function CustomModal(props) {
+ *   return (
+ *    <Modal onClose={ props.onClose }>
+ *      <Modal.Title>
+ *        Custom Modal
+ *      </Modal.Title>
+ *      <Modal.Body>
+ *        Hello world!
+ *      </Modal.Body>
+ *      <Modal.Footer>
+ *        <button type="button" onClick={ props.onClose }>
+ *          Close
+ *        </button>
+ *      </Modal.Footer>
+ *    </Modal>
+ *   );
+ * }
  */
 const Modal = window.components.Modal;
+
+/**
+ * Overlay component.
+ *
+ * @type {import('react').ComponentType<{ onClose: Function, anchor: Node, offset?: { bottom?: number, left?: number, right?: number } }>}
+ *
+ * @example
+ * 
+ * import { Overlay } from 'camunda-modeler-plugin-helpers/components';
+ *
+ * function CustomOverlay(props) {
+ *   return (
+ *    <Overlay onClose={ props.onClose } anchor={ props.btn_ref } offset={ props.anchor }>
+ *      <Overlay.Title>
+ *        Custom Modal
+ *      </Overlay.Title>
+ *      <Overlay.Body>
+ *        Hello world!
+ *      </Overlay.Body>
+ *      <Overlay.Footer>
+ *        <button type="button" onClick={ props.onClose }>
+ *          Close
+ *        </button>
+ *      </Overlay.Footer>
+ *    </Overlay>
+ *   );
+ * }
+ */
+ const Overlay = window.components.Overlay || NotCompatible('4.12');
+
+ /**
+ * ToggleSwitch component.
+ *
+ * @type {import('react').ComponentType<{ id: string, name: string, label?: string, switcherLabel?: string, description?: string }>}
+ *
+ * @example
+ * 
+ * import { ToggleSwitch } from 'camunda-modeler-plugin-helpers/components';
+ *
+ * function CustomToggle(props) {
+ *   return (
+ *    <Formik initialValues={ initialValues } onSubmit={ this.onSubmit }>
+ *      {() => (
+ *        <Form>
+ *          <Field
+ *            component={ ToggleSwitch }
+ *            switcherLabel="Switcher label"
+ *            id={ id }
+ *            name={ name }
+ *            description="Toggle description"
+ *          />
+ *        </Form>
+ *       )}
+ *    </Formik>
+ *   );
+ * }
+ */
+const ToggleSwitch = window.components.ToggleSwitch || NotCompatible('4.12');
 
 /***/ }),
 
@@ -487,6 +597,73 @@ module.exports = window.react;
 
 /***/ }),
 
+/***/ "./node_modules/classnames/index.js":
+/*!******************************************!*\
+  !*** ./node_modules/classnames/index.js ***!
+  \******************************************/
+/***/ ((module, exports) => {
+
+var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
+  Copyright (c) 2018 Jed Watson.
+  Licensed under the MIT License (MIT), see
+  http://jedwatson.github.io/classnames
+*/
+/* global define */
+
+(function () {
+	'use strict';
+
+	var hasOwn = {}.hasOwnProperty;
+
+	function classNames() {
+		var classes = [];
+
+		for (var i = 0; i < arguments.length; i++) {
+			var arg = arguments[i];
+			if (!arg) continue;
+
+			var argType = typeof arg;
+
+			if (argType === 'string' || argType === 'number') {
+				classes.push(arg);
+			} else if (Array.isArray(arg)) {
+				if (arg.length) {
+					var inner = classNames.apply(null, arg);
+					if (inner) {
+						classes.push(inner);
+					}
+				}
+			} else if (argType === 'object') {
+				if (arg.toString === Object.prototype.toString) {
+					for (var key in arg) {
+						if (hasOwn.call(arg, key) && arg[key]) {
+							classes.push(key);
+						}
+					}
+				} else {
+					classes.push(arg.toString());
+				}
+			}
+		}
+
+		return classes.join(' ');
+	}
+
+	if ( true && module.exports) {
+		classNames.default = classNames;
+		module.exports = classNames;
+	} else if (true) {
+		// register as 'classnames', consistent with npm package name
+		!(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_RESULT__ = (function () {
+			return classNames;
+		}).apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
+		__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	} else {}
+}());
+
+
+/***/ }),
+
 /***/ "./resources/timer.svg":
 /*!*****************************!*\
   !*** ./resources/timer.svg ***!
@@ -610,7 +787,7 @@ __webpack_require__.r(__webpack_exports__);
  */
 
 
-(0,camunda_modeler_plugin_helpers__WEBPACK_IMPORTED_MODULE_0__.registerClientExtension)(_AutoSavePlugin__WEBPACK_IMPORTED_MODULE_1__.default);
+(0,camunda_modeler_plugin_helpers__WEBPACK_IMPORTED_MODULE_0__.registerClientExtension)(_AutoSavePlugin__WEBPACK_IMPORTED_MODULE_1__["default"]);
 })();
 
 /******/ })()
